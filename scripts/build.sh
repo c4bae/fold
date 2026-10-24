@@ -37,5 +37,10 @@ echo "Built $APP"
 
 if [ "$RUN" = 1 ]; then
     pkill -x WindowNotch 2>/dev/null || true
+    # `open` fails if the old instance is still shutting down.
+    for _ in $(seq 50); do
+        pgrep -x WindowNotch >/dev/null || break
+        sleep 0.1
+    done
     open "$APP"
 fi
