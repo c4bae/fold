@@ -6,7 +6,7 @@ struct FoldApp: App {
 
     var body: some Scene {
         MenuBarExtra("Fold", systemImage: "rectangle.stack") {
-            Button("Open Switcher") {
+            Button("Open Fold") {
                 appDelegate.coordinator.openSwitcher()
             }
             Divider()
@@ -18,7 +18,7 @@ struct FoldApp: App {
                 appDelegate.onboarding.show()
             }
             Divider()
-            Button("Quit Fold") {
+            Button("Quit") {
                 NSApp.terminate(nil)
             }
             .keyboardShortcut("q")
