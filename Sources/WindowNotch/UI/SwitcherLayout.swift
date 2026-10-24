@@ -6,13 +6,13 @@ import CoreGraphics
 struct SwitcherLayout {
     let screenSize: CGSize
 
-    static let gap: CGFloat = 28
+    static let gap: CGFloat = 40
     static let topMargin: CGFloat = 48
     static let bottomMargin: CGFloat = 32
 
     var columnWidth: CGFloat { screenSize.width * 0.38 }
     var maxColumnHeight: CGFloat { screenSize.height * 0.8 }
-    var maxPreviewWidth: CGFloat { screenSize.width * 0.42 }
+    var maxPreviewWidth: CGFloat { screenSize.width * 0.5 }
     var maxPreviewHeight: CGFloat { screenSize.height - Self.topMargin - Self.bottomMargin }
 
     private var left: CGFloat {
