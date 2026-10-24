@@ -64,7 +64,7 @@ final class OverlayController {
     func show(on screen: NSScreen) {
         generation += 1
         isVisible = true
-        dismissal = PointerDismissal(notchRect: screen.notchTriggerRect)
+        dismissal.beginSession(notchRect: screen.notchTriggerRect)
 
         panel.setFrame(screen.frame, display: false)
         panel.alphaValue = 0

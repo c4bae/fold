@@ -17,6 +17,13 @@ struct PointerDismissal {
         self.notchRect = notchRect
     }
 
+    /// Starts a new overlay session. The content rect is kept: SwiftUI only
+    /// reports it when it changes, so it may not be reported again on reopen.
+    mutating func beginSession(notchRect: CGRect) {
+        self.notchRect = notchRect
+        isArmed = false
+    }
+
     /// Returns true when the overlay should be dismissed.
     mutating func pointerMoved(to point: CGPoint) -> Bool {
         guard !contentRect.isNull else { return false }

@@ -36,3 +36,20 @@ final class PointerDismissalTests: XCTestCase {
         XCTAssertFalse(dismissal.pointerMoved(to: CGPoint(x: 0, y: 0)))
     }
 }
+
+extension PointerDismissalTests {
+    func testNewSessionKeepsContentRectAndDisarms() {
+        var dismissal = PointerDismissal(contentRect: content, notchRect: notch)
+        _ = dismissal.pointerMoved(to: CGPoint(x: 500, y: 400))
+        XCTAssertTrue(dismissal.isArmed)
+
+        let newNotch = CGRect(x: 0, y: 990, width: 200, height: 10)
+        dismissal.beginSession(notchRect: newNotch)
+        XCTAssertFalse(dismissal.isArmed)
+        XCTAssertEqual(dismissal.notchRect, newNotch)
+
+        // Content rect survives, so the new session can still arm and dismiss.
+        XCTAssertFalse(dismissal.pointerMoved(to: CGPoint(x: 500, y: 400)))
+        XCTAssertTrue(dismissal.pointerMoved(to: CGPoint(x: 50, y: 50)))
+    }
+}
