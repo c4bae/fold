@@ -28,6 +28,11 @@ final class AppCoordinator {
                     self?.overlay.hide()
                     NSWorkspace.shared.open(Self.authorURL)
                 },
+                onOpenPermissionSettings: { [weak self] in
+                    // Close first; the overlay would cover System Settings.
+                    self?.overlay.hide()
+                    PermissionManager.requestScreenRecording()
+                },
                 onContentFrameChange: { [weak self] frame in
                     guard let self else { return }
                     self.overlay.setContentRect(self.overlay.screenRect(fromSwiftUIGlobal: frame))

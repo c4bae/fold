@@ -9,6 +9,7 @@ struct OverlayRootView: View {
     let onSelect: (WindowInfo) -> Void
     let onBackgroundClick: () -> Void
     let onCreditClick: () -> Void
+    let onOpenPermissionSettings: () -> Void
     let onContentFrameChange: (CGRect) -> Void
 
     @State private var contentFrame: CGRect = .null
@@ -45,7 +46,7 @@ struct OverlayRootView: View {
         case .loading:
             Color.clear.frame(width: 1, height: 1)
         case .permissionNeeded:
-            reportingFrame(PermissionNeededCard())
+            reportingFrame(PermissionNeededCard(onOpenSettings: onOpenPermissionSettings))
         case .windows(let windows) where windows.isEmpty:
             reportingFrame(MessageCard(text: "No open windows"))
         case .windows(let windows):
@@ -108,6 +109,8 @@ private struct MessageCard: View {
 }
 
 private struct PermissionNeededCard: View {
+    let onOpenSettings: () -> Void
+
     var body: some View {
         VStack(spacing: 14) {
             Text("Screen Recording permission needed")
@@ -117,9 +120,7 @@ private struct PermissionNeededCard: View {
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.white.opacity(0.75))
             HStack(spacing: 10) {
-                Button("Open System Settings") {
-                    PermissionManager.requestScreenRecording()
-                }
+                Button("Open System Settings", action: onOpenSettings)
                 Button("Relaunch Fold") {
                     AppRelauncher.relaunch()
                 }
