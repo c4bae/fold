@@ -1,5 +1,5 @@
 import XCTest
-@testable import WindowNotch
+@testable import Fold
 
 final class WindowFilterTests: XCTestCase {
     private func window(
@@ -29,9 +29,9 @@ final class WindowFilterTests: XCTestCase {
 
     func testExcludesOwnWindows() {
         let result = WindowFilter.switchable(
-            [window(1, bundleID: "com.c4bae.WindowNotch"), window(2)],
+            [window(1, bundleID: "com.c4bae.Fold"), window(2)],
             zOrder: [],
-            ownBundleID: "com.c4bae.WindowNotch"
+            ownBundleID: "com.c4bae.Fold"
         )
         XCTAssertEqual(result.map(\.id), [2])
     }

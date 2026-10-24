@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// The welcome window: explains how to use WindowNotch and walks through
+/// The welcome window: explains how to use Fold and walks through
 /// granting Screen Recording permission.
 @MainActor
 final class OnboardingWindowController {
@@ -22,7 +22,7 @@ final class OnboardingWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "Welcome to WindowNotch"
+        window.title = "Welcome to Fold"
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.isMovableByWindowBackground = true
@@ -40,7 +40,7 @@ private struct OnboardingView: View {
                     .font(.system(size: 34, weight: .medium))
                     .foregroundStyle(.tint)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Welcome to WindowNotch")
+                    Text("Welcome to Fold")
                         .font(.title2.weight(.semibold))
                     Text("Rest your cursor on the notch to see all your open windows. Click one to switch to it.")
                         .foregroundStyle(.secondary)
@@ -53,19 +53,19 @@ private struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Screen Recording permission")
                     .font(.headline)
-                Text("macOS requires it for WindowNotch to read window titles and show previews. Previews stay in memory on your Mac: nothing is recorded, saved, or sent anywhere.")
+                Text("macOS requires it for Fold to read window titles and show previews. Previews stay in memory on your Mac: nothing is recorded, saved, or sent anywhere.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             VStack(alignment: .leading, spacing: 14) {
-                Step(number: 1, text: "Turn on WindowNotch under Privacy & Security > Screen Recording.") {
+                Step(number: 1, text: "Turn on Fold under Privacy & Security > Screen Recording.") {
                     Button("Open System Settings") {
                         PermissionManager.requestScreenRecording()
                     }
                 }
-                Step(number: 2, text: "Relaunch WindowNotch so the permission takes effect.") {
-                    Button("Relaunch WindowNotch") {
+                Step(number: 2, text: "Relaunch Fold so the permission takes effect.") {
+                    Button("Relaunch Fold") {
                         AppRelauncher.relaunch()
                     }
                 }

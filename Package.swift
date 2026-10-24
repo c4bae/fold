@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "WindowNotch",
+    name: "Fold",
     platforms: [.macOS(.v14)],
     targets: [
         .executableTarget(
-            name: "WindowNotch",
-            path: "Sources/WindowNotch"
+            name: "Fold",
+            path: "Sources/Fold"
         ),
         .testTarget(
-            name: "WindowNotchTests",
-            dependencies: ["WindowNotch"],
-            path: "Tests/WindowNotchTests"
+            name: "FoldTests",
+            dependencies: ["Fold"],
+            path: "Tests/FoldTests"
         ),
     ]
 )

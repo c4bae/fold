@@ -5,15 +5,15 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleExecutable</key>
-    <string>WindowNotch</string>
+    <string>Fold</string>
     <key>CFBundleIdentifier</key>
-    <string>com.c4bae.WindowNotch</string>
+    <string>com.c4bae.Fold</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>WindowNotch</string>
+    <string>Fold</string>
     <key>CFBundleDisplayName</key>
-    <string>WindowNotch</string>
+    <string>Fold</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

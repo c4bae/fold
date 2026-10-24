@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds WindowNotch.app into ./build and signs it with the stable dev identity.
+# Builds Fold.app into ./build and signs it with the stable dev identity.
 # Usage: scripts/build.sh [--debug] [--run]
 set -euo pipefail
 trap 'echo "error: ${BASH_SOURCE[0]} failed at line $LINENO" >&2' ERR
@@ -16,15 +16,15 @@ for arg in "$@"; do
     esac
 done
 
-IDENTITY="WindowNotch Dev"
-APP="build/WindowNotch.app"
+IDENTITY="Fold Dev"
+APP="build/Fold.app"
 
 swift build -c "$CONFIG"
-BIN="$(swift build -c "$CONFIG" --show-bin-path)/WindowNotch"
+BIN="$(swift build -c "$CONFIG" --show-bin-path)/Fold"
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN" "$APP/Contents/MacOS/WindowNotch"
+cp "$BIN" "$APP/Contents/MacOS/Fold"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 
 if [[ "$(security find-identity -p codesigning)" != *"\"$IDENTITY\""* ]]; then
@@ -36,10 +36,10 @@ codesign --force --options runtime --timestamp=none -s "$IDENTITY" "$APP"
 echo "Built $APP"
 
 if [ "$RUN" = 1 ]; then
-    pkill -x WindowNotch 2>/dev/null || true
+    pkill -x Fold 2>/dev/null || true
     # `open` fails if the old instance is still shutting down.
     for _ in $(seq 50); do
-        pgrep -x WindowNotch >/dev/null || break
+        pgrep -x Fold >/dev/null || break
         sleep 0.1
     done
     open "$APP"

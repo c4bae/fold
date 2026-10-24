@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 import XCTest
-@testable import WindowNotch
+@testable import Fold
 
 @MainActor
 final class SwitcherViewLayoutTests: XCTestCase {

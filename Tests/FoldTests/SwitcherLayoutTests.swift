@@ -1,5 +1,5 @@
 import XCTest
-@testable import WindowNotch
+@testable import Fold
 
 final class SwitcherLayoutTests: XCTestCase {
     let layout = SwitcherLayout(screenSize: CGSize(width: 1500, height: 1000))

@@ -1,11 +1,11 @@
 import SwiftUI
 
 @main
-struct WindowNotchApp: App {
+struct FoldApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        MenuBarExtra("WindowNotch", systemImage: "rectangle.stack") {
+        MenuBarExtra("Fold", systemImage: "rectangle.stack") {
             Button("Open Switcher") {
                 appDelegate.coordinator.openSwitcher()
             }
@@ -18,7 +18,7 @@ struct WindowNotchApp: App {
                 appDelegate.onboarding.show()
             }
             Divider()
-            Button("Quit WindowNotch") {
+            Button("Quit Fold") {
                 NSApp.terminate(nil)
             }
             .keyboardShortcut("q")

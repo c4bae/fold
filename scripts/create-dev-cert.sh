@@ -1,5 +1,5 @@
 #!/bin/bash
-# Creates a self-signed, code-signing-only certificate ("WindowNotch Dev") in the
+# Creates a self-signed, code-signing-only certificate ("Fold Dev") in the
 # login keychain so every build has the same signature and macOS keeps the
 # Screen Recording permission across rebuilds. Run once.
 #
@@ -7,11 +7,11 @@
 # digitalSignature, CA:FALSE) and is trusted only for the code-signing policy.
 #
 # To remove it later:
-#   security delete-identity -c "WindowNotch Dev" ~/Library/Keychains/login.keychain-db
+#   security delete-identity -c "Fold Dev" ~/Library/Keychains/login.keychain-db
 set -euo pipefail
 trap 'echo "error: ${BASH_SOURCE[0]} failed at line $LINENO" >&2' ERR
 
-NAME="WindowNotch Dev"
+NAME="Fold Dev"
 KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
 OPENSSL=/usr/bin/openssl  # LibreSSL; produces a .p12 that `security import` accepts
 

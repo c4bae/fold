@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 import XCTest
-@testable import WindowNotch
+@testable import Fold
 
 final class ScrollIndicatorTests: XCTestCase {
     func testHiddenWhenContentFits() {

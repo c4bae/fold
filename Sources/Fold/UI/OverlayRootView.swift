@@ -112,7 +112,7 @@ private struct PermissionNeededCard: View {
         VStack(spacing: 14) {
             Text("Screen Recording permission needed")
                 .font(.title3.weight(.semibold))
-            Text("WindowNotch needs it to read window titles and show previews.\nAfter granting it, relaunch WindowNotch.")
+            Text("Fold needs it to read window titles and show previews.\nAfter granting it, relaunch Fold.")
                 .font(.callout)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.white.opacity(0.75))
@@ -120,7 +120,7 @@ private struct PermissionNeededCard: View {
                 Button("Open System Settings") {
                     PermissionManager.requestScreenRecording()
                 }
-                Button("Relaunch WindowNotch") {
+                Button("Relaunch Fold") {
                     AppRelauncher.relaunch()
                 }
             }

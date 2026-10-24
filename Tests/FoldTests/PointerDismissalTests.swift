@@ -1,5 +1,5 @@
 import XCTest
-@testable import WindowNotch
+@testable import Fold
 
 final class PointerDismissalTests: XCTestCase {
     let content = CGRect(x: 200, y: 200, width: 600, height: 400)

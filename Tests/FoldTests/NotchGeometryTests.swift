@@ -1,5 +1,5 @@
 import XCTest
-@testable import WindowNotch
+@testable import Fold
 
 final class NotchGeometryTests: XCTestCase {
     // 14" MacBook Pro: 1512x982 points, notch ~185pt wide, 32pt tall.
