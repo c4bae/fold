@@ -18,15 +18,6 @@ struct OverlayRootView: View {
                     .onTapGesture(perform: onBackgroundClick)
 
                 content(screenSize: proxy.size)
-                    .background(
-                        GeometryReader { contentProxy in
-                            Color.clear
-                                .onAppear { onContentFrameChange(contentProxy.frame(in: .global)) }
-                                .onChange(of: contentProxy.frame(in: .global)) { _, frame in
-                                    onContentFrameChange(frame)
-                                }
-                        }
-                    )
             }
         }
         .ignoresSafeArea()
@@ -38,20 +29,32 @@ struct OverlayRootView: View {
         case .loading:
             Color.clear.frame(width: 1, height: 1)
         case .permissionNeeded:
-            PermissionNeededCard()
+            reportingFrame(PermissionNeededCard())
         case .windows(let windows) where windows.isEmpty:
-            MessageCard(text: "No open windows")
+            reportingFrame(MessageCard(text: "No open windows"))
         case .windows(let windows):
-            AccordionView(
+            SwitcherView(
                 model: model,
                 windows: windows,
-                width: screenSize.width * 0.7,
-                maxHeight: screenSize.height * 0.8,
-                onSelect: onSelect
+                screenSize: screenSize,
+                onSelect: onSelect,
+                onContentFrameChange: onContentFrameChange
             )
         case .failed(let message):
-            MessageCard(text: message)
+            reportingFrame(MessageCard(text: message))
         }
+    }
+
+    private func reportingFrame(_ card: some View) -> some View {
+        card.background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { onContentFrameChange(proxy.frame(in: .global)) }
+                    .onChange(of: proxy.frame(in: .global)) { _, frame in
+                        onContentFrameChange(frame)
+                    }
+            }
+        )
     }
 }
 

@@ -1,10 +1,17 @@
 import AppKit
 import ScreenCaptureKit
 
+/// The switchable windows, plus the ScreenCaptureKit handles needed to
+/// capture them.
+struct WindowSnapshot {
+    let windows: [WindowInfo]
+    let captureTargets: [SCWindow]
+}
+
 /// Fetches the current list of switchable windows.
 @MainActor
 enum WindowProvider {
-    static func fetchWindows() async throws -> [WindowInfo] {
+    static func fetchWindows() async throws -> WindowSnapshot {
         let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
 
         var windowsByID: [CGWindowID: SCWindow] = [:]
@@ -26,18 +33,22 @@ enum WindowProvider {
             ownBundleID: Bundle.main.bundleIdentifier
         )
 
-        return ordered.compactMap { candidate in
-            guard let window = windowsByID[candidate.id], let app = window.owningApplication else { return nil }
+        var windows: [WindowInfo] = []
+        var captureTargets: [SCWindow] = []
+        for candidate in ordered {
+            guard let window = windowsByID[candidate.id], let app = window.owningApplication else { continue }
             let pid = app.processID
-            return WindowInfo(
+            windows.append(WindowInfo(
                 id: candidate.id,
                 pid: pid,
                 appName: candidate.appName,
                 title: window.title ?? "",
                 frame: candidate.frame,
                 icon: NSRunningApplication(processIdentifier: pid)?.icon
-            )
+            ))
+            captureTargets.append(window)
         }
+        return WindowSnapshot(windows: windows, captureTargets: captureTargets)
     }
 
     /// On-screen window IDs ordered front to back. ScreenCaptureKit does not

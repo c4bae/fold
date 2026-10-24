@@ -14,6 +14,7 @@ final class SwitcherModel {
 
     private(set) var content: Content = .loading
     var highlightedID: CGWindowID?
+    private(set) var thumbnails: [CGWindowID: CGImage] = [:]
 
     /// Bumped on every new session so a slow fetch from a previous open can't
     /// overwrite the current list.
@@ -33,6 +34,7 @@ final class SwitcherModel {
         session += 1
         content = .loading
         highlightedID = nil
+        thumbnails = [:]
         return session
     }
 
@@ -44,6 +46,16 @@ final class SwitcherModel {
         guard session == self.session else { return }
         content = .windows(windows)
         highlightedID = windows.first?.id
+    }
+
+    func setThumbnails(_ thumbnails: [CGWindowID: CGImage], session: Int) {
+        guard session == self.session else { return }
+        self.thumbnails = thumbnails
+    }
+
+    func setThumbnail(_ image: CGImage, for id: CGWindowID, session: Int) {
+        guard session == self.session else { return }
+        thumbnails[id] = image
     }
 
     func setFailure(_ message: String, session: Int) {

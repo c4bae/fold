@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// One window as a wide, short strip: app icon and title.
+/// One window as a wide, short translucent row: app icon and title.
 struct StripView: View {
     let window: WindowInfo
     let isHighlighted: Bool
@@ -27,6 +27,10 @@ struct StripView: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(.white.opacity(isHighlighted ? 0.22 : 0.08))
         )
+        // Rasterize on the GPU; otherwise SwiftUI redraws the row (including
+        // rescaling the icon) on the CPU every animation frame.
+        .drawingGroup()
+        .animation(.easeOut(duration: 0.08), value: isHighlighted)
         .contentShape(RoundedRectangle(cornerRadius: 12))
     }
 }

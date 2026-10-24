@@ -8,6 +8,7 @@ final class AppCoordinator {
     private let overlay = OverlayController()
     private let model = SwitcherModel()
     private let switcher: WindowSwitcher = AppActivationSwitcher()
+    private let thumbnailService = ThumbnailService()
 
     func start() {
         trigger.onTrigger = { [weak self] in self?.openSwitcher() }
@@ -42,8 +43,13 @@ final class AppCoordinator {
         }
         Task {
             do {
-                let windows = try await WindowProvider.fetchWindows()
-                model.setWindows(windows, session: session)
+                let snapshot = try await WindowProvider.fetchWindows()
+                let ids = snapshot.windows.map(\.id)
+                model.setThumbnails(thumbnailService.cachedThumbnails(for: ids), session: session)
+                model.setWindows(snapshot.windows, session: session)
+                await thumbnailService.capture(snapshot.captureTargets) { id, image in
+                    model.setThumbnail(image, for: id, session: session)
+                }
             } catch {
                 model.setFailure("Couldn't list windows: \(error.localizedDescription)", session: session)
             }
