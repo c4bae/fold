@@ -1,4 +1,4 @@
-// Renders Fold's app icon and writes Resources/AppIcon.icns and docs/icon.png.
+// Renders Fold's app icon and writes resources/AppIcon.icns and docs/icon.png.
 // Usage: swift scripts/make-icon.swift
 //
 // The design: a dark squircle with the notch at the top and translucent rows
@@ -126,7 +126,7 @@ let readmeIcon = root.appendingPathComponent("docs/icon.png")
 try fm.createDirectory(at: readmeIcon.deletingLastPathComponent(), withIntermediateDirectories: true)
 try renderPNG(size: 512).write(to: readmeIcon)
 
-let output = root.appendingPathComponent("Resources/AppIcon.icns")
+let output = root.appendingPathComponent("resources/AppIcon.icns")
 let iconutil = Process()
 iconutil.executableURL = URL(fileURLWithPath: "/usr/bin/iconutil")
 iconutil.arguments = ["-c", "icns", iconset.path, "-o", output.path]

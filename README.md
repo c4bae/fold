@@ -82,21 +82,21 @@ scripts/build.sh            # release build into build/Fold.app
 scripts/build.sh --debug    # debug build
 scripts/build.sh --run      # build, quit any running Fold, and relaunch
 swift test                  # unit tests
-swift scripts/make-icon.swift .   # regenerate Resources/AppIcon.icns and docs/icon.png
+swift scripts/make-icon.swift .   # regenerate resources/AppIcon.icns and docs/icon.png
 ```
 
 This is a Swift package with no Xcode project. The app bundle is put together by `scripts/build.sh`.
 
 ```
-Sources/Fold/
+sources/fold/
 ├── FoldApp.swift          # menu bar extra and app delegate
 ├── AppCoordinator.swift   # connects the trigger, overlay, model and switching
-├── Trigger/               # notch geometry and the hover trigger
-├── Overlay/               # overlay panel, keyboard handling, pointer dismissal
-├── Windows/               # window list (ScreenCaptureKit) and thumbnails
-├── Switching/             # WindowSwitcher protocol and app activation
-├── Permissions/           # Screen Recording checks and the welcome window
-└── UI/                    # SwiftUI views and the switcher model
+├── trigger/               # notch geometry and the hover trigger
+├── overlay/               # overlay panel, keyboard handling, pointer dismissal
+├── windows/               # window list (ScreenCaptureKit) and thumbnails
+├── switching/             # WindowSwitcher protocol and app activation
+├── permissions/           # Screen Recording checks and the welcome window
+└── ui/                    # SwiftUI views and the switcher model
 ```
 
 All switching goes through the `WindowSwitcher` protocol, so a more precise approach (for example, raising a specific window through the Accessibility API) can replace it without changes elsewhere.

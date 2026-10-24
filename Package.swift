@@ -7,12 +7,12 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Fold",
-            path: "Sources/Fold"
+            path: "sources/fold"
         ),
         .testTarget(
             name: "FoldTests",
             dependencies: ["Fold"],
-            path: "Tests/FoldTests"
+            path: "tests/foldtests"
         ),
     ]
 )
