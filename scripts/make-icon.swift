@@ -1,4 +1,4 @@
-// Renders Fold's app icon and writes Resources/AppIcon.icns.
+// Renders Fold's app icon and writes Resources/AppIcon.icns and docs/icon.png.
 // Usage: swift scripts/make-icon.swift
 //
 // The design: a dark squircle with the notch at the top and translucent rows
@@ -121,10 +121,10 @@ for points in [16, 32, 128, 256, 512] {
     try renderPNG(size: points).write(to: iconset.appendingPathComponent("icon_\(points)x\(points).png"))
     try renderPNG(size: points * 2).write(to: iconset.appendingPathComponent("icon_\(points)x\(points)@2x.png"))
 }
-// Full-size preview for eyeballing the design; build/ is gitignored.
-let preview = root.appendingPathComponent("build/AppIcon-preview.png")
-try fm.createDirectory(at: preview.deletingLastPathComponent(), withIntermediateDirectories: true)
-try renderPNG(size: 1024).write(to: preview)
+// PNG copy shown in the README; 512px stays sharp at retina display sizes.
+let readmeIcon = root.appendingPathComponent("docs/icon.png")
+try fm.createDirectory(at: readmeIcon.deletingLastPathComponent(), withIntermediateDirectories: true)
+try renderPNG(size: 512).write(to: readmeIcon)
 
 let output = root.appendingPathComponent("Resources/AppIcon.icns")
 let iconutil = Process()
@@ -136,4 +136,4 @@ guard iconutil.terminationStatus == 0 else {
     FileHandle.standardError.write("iconutil failed\n".data(using: .utf8)!)
     exit(1)
 }
-print("Wrote \(output.path)")
+print("Wrote \(output.path) and \(readmeIcon.path)")

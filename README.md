@@ -1,6 +1,10 @@
-# Fold
+<p align="center">
+  <img src="docs/icon.png" width="160" alt="Fold app icon">
+</p>
 
-**Your MacBook's notch, turned into a window switcher.**
+<h1 align="center">Fold</h1>
+
+<p align="center"><strong>Your MacBook's notch, turned into a window switcher.</strong></p>
 
 Rest the cursor on the notch for a moment and Fold opens a dimmed, blurred overlay listing every open window. Hover a window to see a large live preview, then click it to jump there.
 
@@ -78,7 +82,7 @@ scripts/build.sh            # release build into build/Fold.app
 scripts/build.sh --debug    # debug build
 scripts/build.sh --run      # build, quit any running Fold, and relaunch
 swift test                  # unit tests
-swift scripts/make-icon.swift .   # regenerate Resources/AppIcon.icns
+swift scripts/make-icon.swift .   # regenerate Resources/AppIcon.icns and docs/icon.png
 ```
 
 This is a Swift package with no Xcode project. The app bundle is put together by `scripts/build.sh`.
