@@ -10,6 +10,10 @@ struct WindowNotchApp: App {
                 appDelegate.coordinator.openSwitcher()
             }
             Divider()
+            Toggle("Launch at Login", isOn: Binding(
+                get: { appDelegate.launchAtLogin.isEnabled },
+                set: { appDelegate.launchAtLogin.setEnabled($0) }
+            ))
             Button("Welcome Guide…") {
                 appDelegate.onboarding.show()
             }
@@ -26,6 +30,7 @@ struct WindowNotchApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let coordinator = AppCoordinator()
     let onboarding = OnboardingWindowController()
+    let launchAtLogin = LaunchAtLogin()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         coordinator.start()
