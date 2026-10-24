@@ -21,7 +21,9 @@ struct OverlayRootView: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-                Color.clear
+                // Dims the blur so bright windows behind it don't wash out
+                // the content.
+                Color.black.opacity(0.4)
                     .contentShape(Rectangle())
                     .onTapGesture(perform: onBackgroundClick)
 

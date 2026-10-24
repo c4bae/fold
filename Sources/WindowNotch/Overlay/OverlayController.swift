@@ -23,6 +23,8 @@ final class OverlayController {
         effectView.material = .hudWindow
         effectView.blendingMode = .behindWindow
         effectView.state = .active
+        // Stay dark in Light mode too; the content is white-on-dark.
+        effectView.appearance = NSAppearance(named: .darkAqua)
         panel.contentView = effectView
         panel.onKey = { [weak self] key in
             guard let self else { return }
