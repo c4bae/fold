@@ -12,14 +12,12 @@ struct SwitcherView: View {
     let onContentFrameChange: (CGRect) -> Void
 
     @State private var columnFrame: CGRect = .zero
-    @State private var scrollOffset: CGFloat = 0
-    @State private var viewportHeight: CGFloat = 0
+    @State private var scrollGeometry: ScrollGeometry?
 
     static let rowHeight: CGFloat = 80
     static let spacing: CGFloat = 6
     /// Gap between the rows and the scroll indicator.
     private static let indicatorInset: CGFloat = 10
-    private static let scrollSpace = "rowScroll"
     /// Resizes the preview between windows of different shapes; snappy so it
     /// keeps up with fast navigation.
     private static let previewSpring = Animation.spring(response: 0.22, dampingFraction: 0.9)
@@ -52,31 +50,20 @@ struct SwitcherView: View {
                 rows
                 ScrollView(.vertical, showsIndicators: false) {
                     rows.background(
-                        GeometryReader { proxy in
-                            Color.clear.preference(
-                                key: ScrollOffsetKey.self,
-                                value: -proxy.frame(in: .named(Self.scrollSpace)).minY
-                            )
+                        ScrollGeometryObserver { geometry in
+                            if geometry != scrollGeometry { scrollGeometry = geometry }
                         }
                     )
                 }
-                .coordinateSpace(name: Self.scrollSpace)
-                .onPreferenceChange(ScrollOffsetKey.self) { scrollOffset = $0 }
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear
-                            .onAppear { viewportHeight = proxy.size.height }
-                            .onChange(of: proxy.size.height) { _, height in viewportHeight = height }
-                    }
-                )
                 .overlay(alignment: .topTrailing) {
-                    if let metrics = ScrollIndicatorMetrics(
-                        viewport: viewportHeight,
-                        content: contentHeight,
-                        offset: scrollOffset
-                    ) {
+                    if let geometry = scrollGeometry,
+                       let metrics = ScrollIndicatorMetrics(
+                           viewport: geometry.viewport,
+                           content: geometry.content,
+                           offset: geometry.offset
+                       ) {
                         ScrollIndicator(metrics: metrics)
-                            .frame(height: viewportHeight)
+                            .frame(height: geometry.viewport)
                             .offset(x: Self.indicatorInset + ScrollIndicator.width)
                     }
                 }
@@ -117,11 +104,6 @@ struct SwitcherView: View {
         }
     }
 
-    private var contentHeight: CGFloat {
-        guard !windows.isEmpty else { return 0 }
-        return CGFloat(windows.count) * Self.rowHeight + CGFloat(windows.count - 1) * Self.spacing
-    }
-
     private func previewFrame(for window: WindowInfo) -> CGRect {
         let size = layout.previewSize(for: window.frame.size)
         return CGRect(
@@ -135,13 +117,5 @@ struct SwitcherView: View {
     private var contentFrame: CGRect {
         guard let window = model.highlightedWindow else { return columnFrame }
         return columnFrame.union(previewFrame(for: window))
-    }
-}
-
-private struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
     }
 }
