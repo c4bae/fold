@@ -1,8 +1,8 @@
 import CoreGraphics
 
 /// Geometry of the switcher: a column of rows left of center and a preview
-/// panel to its right, aligned with the highlighted row. All values are in
-/// the overlay's coordinate space (top-left origin, screen-sized).
+/// panel to its right, both vertically centered. All values are in the
+/// overlay's coordinate space (top-left origin, screen-sized).
 struct SwitcherLayout {
     let screenSize: CGSize
 
@@ -20,6 +20,10 @@ struct SwitcherLayout {
     }
 
     var columnCenterX: CGFloat { left + columnWidth / 2 }
+
+    /// Vertical center of the area between the margins, shared by the column
+    /// and the preview.
+    var centerY: CGFloat { (Self.topMargin + screenSize.height - Self.bottomMargin) / 2 }
     var previewMinX: CGFloat { left + columnWidth + Self.gap }
 
     /// The largest size with the window's aspect ratio that fits the preview
@@ -36,11 +40,4 @@ struct SwitcherLayout {
         return size
     }
 
-    /// Centers the preview on the row, kept within the screen margins.
-    func previewCenterY(rowMidY: CGFloat, height: CGFloat) -> CGFloat {
-        let minY = Self.topMargin + height / 2
-        let maxY = screenSize.height - Self.bottomMargin - height / 2
-        guard minY <= maxY else { return screenSize.height / 2 }
-        return min(max(rowMidY, minY), maxY)
-    }
 }

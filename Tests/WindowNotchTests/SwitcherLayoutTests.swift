@@ -23,9 +23,9 @@ final class SwitcherLayoutTests: XCTestCase {
         XCTAssertEqual(size.width, layout.maxPreviewHeight / 5, accuracy: 0.001)
     }
 
-    func testPreviewFollowsRowButStaysOnScreen() {
-        XCTAssertEqual(layout.previewCenterY(rowMidY: 500, height: 300), 500)
-        XCTAssertEqual(layout.previewCenterY(rowMidY: 60, height: 300), SwitcherLayout.topMargin + 150)
-        XCTAssertEqual(layout.previewCenterY(rowMidY: 990, height: 300), 1000 - SwitcherLayout.bottomMargin - 150)
+    func testTallestPreviewFitsBetweenMarginsWhenCentered() {
+        let size = layout.previewSize(for: CGSize(width: 400, height: 2000))
+        XCTAssertEqual(layout.centerY - size.height / 2, SwitcherLayout.topMargin, accuracy: 0.001)
+        XCTAssertEqual(layout.centerY + size.height / 2, 1000 - SwitcherLayout.bottomMargin, accuracy: 0.001)
     }
 }

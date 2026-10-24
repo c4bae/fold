@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// The window list: a column of rows with a preview of the highlighted window
-/// beside it. Reports the combined frame of both so the overlay stays open
-/// while the cursor is over either.
+/// beside it, both centered vertically. Reports the combined frame of both so
+/// the overlay stays open while the cursor is over either.
 @MainActor
 struct SwitcherView: View {
     let model: SwitcherModel
@@ -12,11 +12,11 @@ struct SwitcherView: View {
     let onContentFrameChange: (CGRect) -> Void
 
     @State private var columnFrame: CGRect = .zero
-    @State private var rowFrames: [CGWindowID: CGRect] = [:]
 
     static let rowHeight: CGFloat = 80
     static let spacing: CGFloat = 6
-    /// Snappier than a typical spring so the preview keeps up with the cursor.
+    /// Resizes the preview between windows of different shapes; snappy so it
+    /// keeps up with fast navigation.
     private static let previewSpring = Animation.spring(response: 0.22, dampingFraction: 0.9)
 
     private var layout: SwitcherLayout { SwitcherLayout(screenSize: screenSize) }
@@ -24,9 +24,10 @@ struct SwitcherView: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             rowList
-                .position(x: layout.columnCenterX, y: screenSize.height / 2)
+                .position(x: layout.columnCenterX, y: layout.centerY)
 
-            if let window = model.highlightedWindow, let preview = previewFrame(for: window) {
+            if let window = model.highlightedWindow {
+                let preview = previewFrame(for: window)
                 PreviewPanel(window: window, thumbnail: model.thumbnails[window.id])
                     .frame(width: preview.width, height: preview.height)
                     .position(x: preview.midX, y: preview.midY)
@@ -36,7 +37,6 @@ struct SwitcherView: View {
             }
         }
         .frame(width: screenSize.width, height: screenSize.height)
-        .onPreferenceChange(RowFramesKey.self) { rowFrames = $0 }
         .onAppear { onContentFrameChange(contentFrame) }
         .onChange(of: contentFrame) { _, frame in onContentFrameChange(frame) }
     }
@@ -77,14 +77,6 @@ struct SwitcherView: View {
                     height: Self.rowHeight
                 )
                 .id(window.id)
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear.preference(
-                            key: RowFramesKey.self,
-                            value: [window.id: proxy.frame(in: .global)]
-                        )
-                    }
-                )
                 .onHover { hovering in
                     if hovering { model.highlightedID = window.id }
                 }
@@ -93,25 +85,18 @@ struct SwitcherView: View {
         }
     }
 
-    private func previewFrame(for window: WindowInfo) -> CGRect? {
-        guard let row = rowFrames[window.id] else { return nil }
+    private func previewFrame(for window: WindowInfo) -> CGRect {
         let size = layout.previewSize(for: window.frame.size)
-        let midY = layout.previewCenterY(rowMidY: row.midY, height: size.height)
-        return CGRect(x: layout.previewMinX, y: midY - size.height / 2, width: size.width, height: size.height)
+        return CGRect(
+            x: layout.previewMinX,
+            y: layout.centerY - size.height / 2,
+            width: size.width,
+            height: size.height
+        )
     }
 
     private var contentFrame: CGRect {
-        guard let window = model.highlightedWindow, let preview = previewFrame(for: window) else {
-            return columnFrame
-        }
-        return columnFrame.union(preview)
-    }
-}
-
-private struct RowFramesKey: PreferenceKey {
-    static var defaultValue: [CGWindowID: CGRect] = [:]
-
-    static func reduce(value: inout [CGWindowID: CGRect], nextValue: () -> [CGWindowID: CGRect]) {
-        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
+        guard let window = model.highlightedWindow else { return columnFrame }
+        return columnFrame.union(previewFrame(for: window))
     }
 }
