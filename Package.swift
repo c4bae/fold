@@ -9,5 +9,10 @@ let package = Package(
             name: "WindowNotch",
             path: "Sources/WindowNotch"
         ),
+        .testTarget(
+            name: "WindowNotchTests",
+            dependencies: ["WindowNotch"],
+            path: "Tests/WindowNotchTests"
+        ),
     ]
 )

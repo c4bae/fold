@@ -6,6 +6,10 @@ struct WindowNotchApp: App {
 
     var body: some Scene {
         MenuBarExtra("WindowNotch", systemImage: "rectangle.stack") {
+            Button("Open Switcher") {
+                appDelegate.coordinator.openSwitcher()
+            }
+            Divider()
             Button("Quit WindowNotch") {
                 NSApp.terminate(nil)
             }
@@ -14,6 +18,11 @@ struct WindowNotchApp: App {
     }
 }
 
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ notification: Notification) {}
+    let coordinator = AppCoordinator()
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        coordinator.start()
+    }
 }
