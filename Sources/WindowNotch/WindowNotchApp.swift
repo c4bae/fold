@@ -10,6 +10,10 @@ struct WindowNotchApp: App {
                 appDelegate.coordinator.openSwitcher()
             }
             Divider()
+            Button("Welcome Guide…") {
+                appDelegate.onboarding.show()
+            }
+            Divider()
             Button("Quit WindowNotch") {
                 NSApp.terminate(nil)
             }
@@ -21,8 +25,12 @@ struct WindowNotchApp: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let coordinator = AppCoordinator()
+    let onboarding = OnboardingWindowController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         coordinator.start()
+        if !PermissionManager.hasScreenRecording {
+            onboarding.show()
+        }
     }
 }
