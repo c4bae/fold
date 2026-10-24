@@ -1,14 +1,22 @@
 import SwiftUI
 
 /// Root of the overlay: a click-to-dismiss backdrop with the switcher content
-/// centered on top. Reports the content's frame so the overlay knows where
-/// the cursor may roam.
+/// centered on top and an author credit at the bottom. Reports the area
+/// spanning both so the overlay knows where the cursor may roam.
 @MainActor
 struct OverlayRootView: View {
     let model: SwitcherModel
     let onSelect: (WindowInfo) -> Void
     let onBackgroundClick: () -> Void
+    let onCreditClick: () -> Void
     let onContentFrameChange: (CGRect) -> Void
+
+    @State private var contentFrame: CGRect = .null
+    @State private var creditFrame: CGRect = .null
+
+    /// Covers the content, the credit, and the space between them, so moving
+    /// from the windows down to the credit doesn't dismiss the overlay.
+    private var reportedFrame: CGRect { contentFrame.union(creditFrame) }
 
     var body: some View {
         GeometryReader { proxy in
@@ -18,9 +26,15 @@ struct OverlayRootView: View {
                     .onTapGesture(perform: onBackgroundClick)
 
                 content(screenSize: proxy.size)
+
+                CreditLink(action: onCreditClick)
+                    .background(frameReader { creditFrame = $0 })
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.bottom, 20)
             }
         }
         .ignoresSafeArea()
+        .onChange(of: reportedFrame) { _, frame in onContentFrameChange(frame) }
     }
 
     @ViewBuilder
@@ -38,7 +52,7 @@ struct OverlayRootView: View {
                 windows: windows,
                 screenSize: screenSize,
                 onSelect: onSelect,
-                onContentFrameChange: onContentFrameChange
+                onContentFrameChange: { contentFrame = $0 }
             )
         case .failed(let message):
             reportingFrame(MessageCard(text: message))
@@ -46,15 +60,35 @@ struct OverlayRootView: View {
     }
 
     private func reportingFrame(_ card: some View) -> some View {
-        card.background(
-            GeometryReader { proxy in
-                Color.clear
-                    .onAppear { onContentFrameChange(proxy.frame(in: .global)) }
-                    .onChange(of: proxy.frame(in: .global)) { _, frame in
-                        onContentFrameChange(frame)
-                    }
-            }
-        )
+        card.background(frameReader { contentFrame = $0 })
+    }
+
+    private func frameReader(_ update: @escaping (CGRect) -> Void) -> some View {
+        GeometryReader { proxy in
+            Color.clear
+                .onAppear { update(proxy.frame(in: .global)) }
+                .onChange(of: proxy.frame(in: .global)) { _, frame in update(frame) }
+        }
+    }
+}
+
+private struct CreditLink: View {
+    let action: () -> Void
+
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: action) {
+            Text("by c4bae")
+                .font(.system(size: 12, weight: .medium))
+                .underline(isHovered)
+                .foregroundStyle(.white.opacity(isHovered ? 0.85 : 0.45))
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { isHovered = $0 }
     }
 }
 

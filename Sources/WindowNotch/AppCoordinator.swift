@@ -10,6 +10,8 @@ final class AppCoordinator {
     private let switcher: WindowSwitcher = AppActivationSwitcher()
     private let thumbnailService = ThumbnailService()
 
+    private static let authorURL = URL(string: "https://github.com/c4bae")!
+
     func start() {
         trigger.onTrigger = { [weak self] in self?.openSwitcher() }
         overlay.onDismiss = { [weak self] in
@@ -22,6 +24,10 @@ final class AppCoordinator {
                 model: model,
                 onSelect: { [weak self] window in self?.select(window) },
                 onBackgroundClick: { [weak self] in self?.overlay.hide() },
+                onCreditClick: { [weak self] in
+                    self?.overlay.hide()
+                    NSWorkspace.shared.open(Self.authorURL)
+                },
                 onContentFrameChange: { [weak self] frame in
                     guard let self else { return }
                     self.overlay.setContentRect(self.overlay.screenRect(fromSwiftUIGlobal: frame))
