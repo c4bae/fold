@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 /// The welcome window: explains how to use Fold and walks through
-/// granting Screen Recording permission.
+/// granting the Screen Recording and Accessibility permissions.
 @MainActor
 final class OnboardingWindowController {
     private var window: NSWindow?
@@ -51,20 +51,25 @@ private struct OnboardingView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Screen Recording permission")
+                Text("Permissions")
                     .font(.headline)
-                Text("macOS requires it for Fold to read window titles and show previews. Previews stay in memory on your Mac: nothing is recorded, saved, or sent anywhere.")
+                Text("Fold needs two macOS permissions. Previews stay in memory on your Mac: nothing is recorded, saved, or sent anywhere.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             VStack(alignment: .leading, spacing: 14) {
-                Step(number: 1, text: "Turn on Fold under Privacy & Security > Screen Recording.") {
-                    Button("Open System Settings") {
+                Step(number: 1, text: "Screen Recording lets Fold read window titles and show previews. Turn on Fold under Privacy & Security > Screen Recording.") {
+                    Button("Open Screen Recording Settings") {
                         PermissionManager.requestScreenRecording()
                     }
                 }
-                Step(number: 2, text: "Relaunch Fold so the permission takes effect.") {
+                Step(number: 2, text: "Accessibility lets Fold bring the exact window you pick to the front, even when an app has several open. Turn on Fold under Privacy & Security > Accessibility.") {
+                    Button("Open Accessibility Settings") {
+                        PermissionManager.requestAccessibility()
+                    }
+                }
+                Step(number: 3, text: "Relaunch Fold so the permissions take effect.") {
                     Button("Relaunch Fold") {
                         AppRelauncher.relaunch()
                     }

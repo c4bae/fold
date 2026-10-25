@@ -7,7 +7,7 @@ final class AppCoordinator {
     private let trigger = NotchTrigger()
     private let overlay = OverlayController()
     private let model = SwitcherModel()
-    private let switcher: WindowSwitcher = AppActivationSwitcher()
+    private let switcher: WindowSwitcher = AccessibilityWindowSwitcher()
     private let thumbnailService = ThumbnailService()
 
     private static let authorURL = URL(string: "https://github.com/c4bae")!

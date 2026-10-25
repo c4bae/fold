@@ -24,7 +24,7 @@ Fold lives in the menu bar and has no Dock icon. It makes no network requests: t
 
 - macOS 14 Sonoma or later
 - Xcode 15.3 or later, or the matching command line tools (for building)
-- Screen Recording permission (see below)
+- Screen Recording and Accessibility permissions (see below)
 
 ## Install
 
@@ -53,10 +53,12 @@ macOS ties the Screen Recording permission to the app's code signature. An unsig
 
 ## Permissions
 
-Fold needs **Screen Recording** permission to read window titles and capture previews. On first launch, a welcome window walks you through granting it:
+Fold needs two permissions. On first launch, a welcome window walks you through granting them:
 
-1. Click **Open System Settings** and turn on Fold under *Privacy & Security → Screen & System Audio Recording*.
-2. Click **Relaunch Fold**.
+- **Screen Recording** lets Fold read window titles and capture previews. Click **Open Screen Recording Settings** and turn on Fold under *Privacy & Security → Screen & System Audio Recording*.
+- **Accessibility** lets Fold bring the exact window you pick to the front, even when an app has several windows open. Click **Open Accessibility Settings** and turn on Fold under *Privacy & Security → Accessibility*. Without it, Fold still switches apps, but macOS decides which of the app's windows comes forward.
+
+Then click **Relaunch Fold**.
 
 You can reopen this guide any time from the menu bar menu (**Welcome Guide…**).
 
@@ -72,7 +74,6 @@ You can reopen this guide any time from the menu bar menu (**Welcome Guide…**)
 ## Limitations
 
 - Only windows on the current Space are listed. Minimized windows are not shown.
-- Switching activates the window's app. If that app has several windows, macOS decides which one comes to the front.
 - On recent macOS versions, the system may occasionally ask you to confirm Screen Recording access again.
 
 ## Development
@@ -94,12 +95,12 @@ sources/fold/
 ├── trigger/               # notch geometry and the hover trigger
 ├── overlay/               # overlay panel, keyboard handling, pointer dismissal
 ├── windows/               # window list (ScreenCaptureKit) and thumbnails
-├── switching/             # WindowSwitcher protocol and app activation
+├── switching/             # raising the chosen window (Accessibility)
 ├── permissions/           # Screen Recording checks and the welcome window
 └── ui/                    # SwiftUI views and the switcher model
 ```
 
-All switching goes through the `WindowSwitcher` protocol, so a more precise approach (for example, raising a specific window through the Accessibility API) can replace it without changes elsewhere.
+Switching goes through the `WindowSwitcher` protocol. `AccessibilityWindowSwitcher` finds the chosen window by its window-server ID (title and frame are the fallback), raises it, then activates its app.
 
 ## Uninstall
 
@@ -107,6 +108,7 @@ All switching goes through the `WindowSwitcher` protocol, so a more precise appr
 # Quit Fold, then:
 rm -rf /Applications/Fold.app
 tccutil reset ScreenCapture com.c4bae.Fold
+tccutil reset Accessibility com.c4bae.Fold
 security delete-identity -c "Fold Dev" ~/Library/Keychains/login.keychain-db
 ```
 
